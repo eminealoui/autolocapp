@@ -4,10 +4,14 @@ import java.util.List;
 import tn.esprit.autoloc.domain.Reservation;
 
 public interface IReservationService {
-    List<Reservation> retrieveAllReservations();
-    Reservation addReservation(Reservation r);
-    Reservation updateReservation(Reservation r);
-    Reservation retrieveReservation(Long idReservation);
-    void removeReservation(Long idReservation);
-    List<Reservation> addReservations(List<Reservation> reservations);
+
+    Reservation create(Reservation reservation);
+
+    Reservation findById(Long id);
+
+    List<Reservation> findAll();
+
+    Reservation update(Long id, Reservation reservation);
+
+    void deleteById(Long id);
 }

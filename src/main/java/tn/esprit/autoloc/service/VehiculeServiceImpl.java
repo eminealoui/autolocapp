@@ -1,46 +1,70 @@
 package tn.esprit.autoloc.service;
 
+import java.math.BigDecimal;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import tn.esprit.autoloc.domain.Vehicule;
+import tn.esprit.autoloc.exception.ResourceNotFoundException;
 import tn.esprit.autoloc.repository.IVehiculeRepository;
 
 @Service
+@RequiredArgsConstructor
 public class VehiculeServiceImpl implements IVehiculeService {
 
     private final IVehiculeRepository vehiculeRepository;
 
-    public VehiculeServiceImpl(IVehiculeRepository vehiculeRepository) {
-        this.vehiculeRepository = vehiculeRepository;
+    @Override
+    public Vehicule create(Vehicule vehicule) {
+        if (vehicule.getIdVehicule() != null) {
+            throw new IllegalArgumentException("Un nouveau vehicule ne doit pas avoir d'identifiant");
+        }
+        checkRegleGestion(vehicule);
+        return vehiculeRepository.save(vehicule);
     }
 
     @Override
-    public List<Vehicule> retrieveAllVehicules() {
+    public Vehicule findById(Long id) {
+        return vehiculeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicule", id));
+    }
+
+    @Override
+    public List<Vehicule> findAll() {
         return vehiculeRepository.findAll();
     }
 
     @Override
-    public Vehicule addVehicule(Vehicule v) {
-        return vehiculeRepository.save(v);
+    public Vehicule update(Long id, Vehicule vehicule) {
+        Vehicule existant = findById(id);
+        checkRegleGestion(vehicule);
+        existant.setImmatriculation(vehicule.getImmatriculation());
+        existant.setMarque(vehicule.getMarque());
+        existant.setModele(vehicule.getModele());
+        existant.setCategorie(vehicule.getCategorie());
+        existant.setTarifJournalier(vehicule.getTarifJournalier());
+        existant.setStatut(vehicule.getStatut());
+        existant.setAgence(vehicule.getAgence());
+        return vehiculeRepository.save(existant);
     }
 
     @Override
-    public Vehicule updateVehicule(Vehicule v) {
-        return vehiculeRepository.save(v);
+    public void deleteById(Long id) {
+        if (!vehiculeRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Vehicule", id);
+        }
+        vehiculeRepository.deleteById(id);
     }
 
-    @Override
-    public Vehicule retrieveVehicule(Long idVehicule) {
-        return vehiculeRepository.findById(idVehicule).orElse(null);
-    }
-
-    @Override
-    public void removeVehicule(Long idVehicule) {
-        vehiculeRepository.deleteById(idVehicule);
-    }
-
-    @Override
-    public List<Vehicule> addVehicules(List<Vehicule> vehicules) {
-        return vehiculeRepository.saveAll(vehicules);
+    // Refuse une immatriculation vide ou un tarif journalier negatif
+    private void checkRegleGestion(Vehicule vehicule) {
+        if (!StringUtils.hasText(vehicule.getImmatriculation())) {
+            throw new IllegalArgumentException("L'immatriculation du vehicule est obligatoire");
+        }
+        if (vehicule.getTarifJournalier() != null
+                && vehicule.getTarifJournalier().compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Le tarif journalier ne peut pas etre negatif");
+        }
     }
 }

@@ -4,10 +4,14 @@ import java.util.List;
 import tn.esprit.autoloc.domain.Employe;
 
 public interface IEmployeService {
-    List<Employe> retrieveAllEmployes();
-    Employe addEmploye(Employe e);
-    Employe updateEmploye(Employe e);
-    Employe retrieveEmploye(Long idEmploye);
-    void removeEmploye(Long idEmploye);
-    List<Employe> addEmployes(List<Employe> employes);
+
+    Employe create(Employe employe);
+
+    Employe findById(Long id);
+
+    List<Employe> findAll();
+
+    Employe update(Long id, Employe employe);
+
+    void deleteById(Long id);
 }
