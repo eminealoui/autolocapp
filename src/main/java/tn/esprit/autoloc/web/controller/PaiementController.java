@@ -1,5 +1,10 @@
 package tn.esprit.autoloc.web.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,22 +14,30 @@ import org.springframework.web.bind.annotation.RestController;
 import tn.esprit.autoloc.domain.Paiement;
 import tn.esprit.autoloc.service.IPaiementService;
 
-// Lecture seule : la creation/modification/suppression d'un paiement passe par
-// ContratController (composition Contrat <> Paiement).
+// Lecture seule : un paiement est cree, modifie et supprime via son Contrat
+// (composition, cascade = ALL). Un POST/PUT/DELETE sur /paiements renvoie 405.
+@Tag(name = "Paiements", description = "Consultation des paiements (lecture seule, geres via les contrats)")
 @RestController
-@RequestMapping("/api/paiements")
+@RequestMapping("/paiements")
 @RequiredArgsConstructor
 public class PaiementController {
 
     private final IPaiementService paiementService;
 
+    @Operation(summary = "Lister les paiements")
+    @ApiResponse(responseCode = "200", description = "Liste des paiements (eventuellement vide)")
     @GetMapping
     public List<Paiement> findAll() {
         return paiementService.findAll();
     }
 
+    @Operation(summary = "Consulter un paiement")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Paiement trouve"),
+            @ApiResponse(responseCode = "404", description = "Paiement introuvable")
+    })
     @GetMapping("/{id}")
-    public Paiement findById(@PathVariable Long id) {
+    public Paiement findById(@Parameter(description = "Identifiant du paiement") @PathVariable Long id) {
         return paiementService.findById(id);
     }
 }
