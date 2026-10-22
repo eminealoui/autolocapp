@@ -148,3 +148,23 @@ Analyse : clic droit sur `web.controller` → *Analyze with SonarQube for IDE*.
    contrat et doivent être rattachés automatiquement à lui → paire Managed/Back.
    Les véhicules, eux, sont créés **seuls** et désignent leur agence par identifiant : la
    liste `Agence.vehicules` n'a besoin ni d'être écrite ni d'être lue → `@JsonIgnore`.
+
+## Captures d'écran (dossier `docs/captures/`)
+
+Exécution réelle du 22/10/2026 (application lancée depuis IntelliJ, MySQL local, port 8081).
+
+| Fichier | Contenu |
+|---|---|
+| 01-postman-runner-96-tests-ok.jpg | *Run collection* : 84 requêtes, **96 tests, 96 passés, 0 échec** |
+| 02-postman-agence-post-201.jpg | POST /api/agences → 201 Created |
+| 03-postman-agence-get-200.jpg | GET /api/agences → 200 OK |
+| 04-postman-agence-get-404.jpg | GET /api/agences/9999 → 404 (corps JSON du GlobalExceptionHandler) |
+| 05-postman-vehicule-post-201.jpg | POST /api/vehicules → 201 Created (agence imbriquée) |
+| 06-postman-vehicule-post-400.jpg | POST /api/vehicules tarif négatif → 400 |
+| 07-postman-client-post-201.jpg | POST /api/clients → 201 Created |
+| 08-postman-client-post-400.jpg | POST /api/clients sans email → 400 |
+| 09-swagger-accueil-autoloc-api.jpg | Swagger UI : « AutoLoc API 1.0.0 » (OpenApiConfig) |
+| 10-swagger-vehicules-clients.jpg | Groupes @Tag Vehicules et Clients avec résumés @Operation |
+| 11-swagger-vehicule-try-it-out.jpg | Try it out sur GET /vehicules/{id} (@Parameter, requête curl) |
+| 12-swagger-vehicule-reponse-200.jpg | Réponse 200 du serveur depuis Swagger |
+| 13-swagger-vehicule-reponses-documentees.jpg | Codes 200/404 documentés par @ApiResponses |
