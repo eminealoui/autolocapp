@@ -143,3 +143,31 @@ Ressource introuvable (404) : même format d'erreur uniforme (`timestamp`, `stat
 Le service `POST /reservations/avec-contrat` et le schéma du DTO de saisie `ReservationWithContratRequestDTO`.
 
 ![Swagger : création d'une réservation et de son contrat](captures/a6-06-swagger-avec-contrat.png)
+
+### 5.5 Les 5 services d'affectation
+
+1. `affecterReservationAClient` : `PUT /api/reservations/{idReservation}/affecter-client?nom=Affecte&prenom=Client`.
+   La réservation est maintenant rattachée au client trouvé par nom et prénom (`idClient`, `nomClient`).
+
+![Affectation d'une réservation à un client](captures/a6-07-affectation-1-reservation-client.png)
+
+2. `affecterVehiculeAEquipement` : `PUT /api/vehicules/{idVehicule}/equipements/{idEquipement}`.
+   L'équipement « Siege bebe » apparaît dans la liste `equipements` du véhicule.
+
+![Affectation d'un équipement à un véhicule](captures/a6-08-affectation-2-vehicule-equipement.png)
+
+3. `affecterMaintenanceAvehicule` : `POST /api/vehicules/affecter-maintenance?description=...&immatriculation=...`.
+   Le véhicule passe au statut `MAINTENANCE` et une maintenance est créée.
+
+![Affectation d'une maintenance à un véhicule](captures/a6-09-affectation-3-maintenance-vehicule.png)
+
+4. `affecterContratAReservation` : `POST /api/contrats/affecter-reservation?dateSignature=...&dateDebut=...&dateFin=...`.
+   Le contrat est créé (201) pour la réservation de la période ; montant = 4 jours × 75 = 300.00.
+
+![Affectation d'un contrat à une réservation](captures/a6-10-affectation-4-contrat-reservation.png)
+
+5. `creerReservationEtContratAssocie` : `POST /api/reservations/avec-contrat`.
+   La réservation et son contrat sont créés en une seule opération (`idReservation` et `idContrat` renseignés).
+
+![Création d'une réservation et de son contrat](captures/a6-11-affectation-5-reservation-et-contrat.png)
+
