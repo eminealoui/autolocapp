@@ -3,45 +3,52 @@ package tn.esprit.autoloc.service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.autoloc.domain.Maintenance;
+import tn.esprit.autoloc.domain.Vehicule;
+import tn.esprit.autoloc.dto.MaintenanceDTO;
+import tn.esprit.autoloc.dto.MaintenanceRequestDTO;
 import tn.esprit.autoloc.exception.ResourceNotFoundException;
+import tn.esprit.autoloc.mapper.MaintenanceMapper;
 import tn.esprit.autoloc.repository.IMaintenanceRepository;
+import tn.esprit.autoloc.repository.IVehiculeRepository;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MaintenanceServiceImpl implements IMaintenanceService {
 
     private final IMaintenanceRepository maintenanceRepository;
+    private final IVehiculeRepository vehiculeRepository;
+    private final MaintenanceMapper maintenanceMapper;
 
     @Override
-    public Maintenance create(Maintenance maintenance) {
-        if (maintenance.getIdMaintenance() != null) {
-            throw new IllegalArgumentException("Une nouvelle maintenance ne doit pas avoir d'identifiant");
-        }
-        checkRegleGestion(maintenance);
-        return maintenanceRepository.save(maintenance);
+    public MaintenanceDTO create(MaintenanceRequestDTO request) {
+        checkRegleGestion(request);
+        Maintenance maintenance = maintenanceMapper.toEntity(request);
+        maintenance.setVehicule(getVehicule(request.getIdVehicule()));
+        return maintenanceMapper.toDto(maintenanceRepository.save(maintenance));
     }
 
     @Override
-    public Maintenance findById(Long id) {
-        return maintenanceRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Maintenance", id));
+    @Transactional(readOnly = true)
+    public MaintenanceDTO findById(Long id) {
+        return maintenanceMapper.toDto(getMaintenance(id));
     }
 
     @Override
-    public List<Maintenance> findAll() {
-        return maintenanceRepository.findAll();
+    @Transactional(readOnly = true)
+    public List<MaintenanceDTO> findAll() {
+        return maintenanceRepository.findAll().stream().map(maintenanceMapper::toDto).toList();
     }
 
     @Override
-    public Maintenance update(Long id, Maintenance maintenance) {
-        Maintenance existante = findById(id);
-        checkRegleGestion(maintenance);
-        existante.setDateDebut(maintenance.getDateDebut());
-        existante.setDateFin(maintenance.getDateFin());
-        existante.setDescription(maintenance.getDescription());
-        existante.setVehicule(maintenance.getVehicule());
-        return maintenanceRepository.save(existante);
+    public MaintenanceDTO update(Long id, MaintenanceRequestDTO request) {
+        Maintenance existante = getMaintenance(id);
+        checkRegleGestion(request);
+        maintenanceMapper.updateEntity(existante, request);
+        existante.setVehicule(getVehicule(request.getIdVehicule()));
+        return maintenanceMapper.toDto(maintenanceRepository.save(existante));
     }
 
     @Override
@@ -52,11 +59,21 @@ public class MaintenanceServiceImpl implements IMaintenanceService {
         maintenanceRepository.deleteById(id);
     }
 
-    // Refuse une date de fin anterieure a la date de debut
-    // (pas d'attribut cout dans le modele actuel, cf. indication de l'enonce)
-    private void checkRegleGestion(Maintenance maintenance) {
-        if (maintenance.getDateFin() != null && maintenance.getDateDebut() != null
-                && maintenance.getDateFin().isBefore(maintenance.getDateDebut())) {
+    private Maintenance getMaintenance(Long id) {
+        return maintenanceRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Maintenance", id));
+    }
+
+    private Vehicule getVehicule(Long idVehicule) {
+        return vehiculeRepository.findById(idVehicule)
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicule", idVehicule));
+    }
+
+    // Regle de gestion : la date de fin ne peut pas preceder la date de debut
+    // (egalement controlee sur le DTO ; garde-fou cote service)
+    private void checkRegleGestion(MaintenanceRequestDTO request) {
+        if (request.getDateFin() != null && request.getDateDebut() != null
+                && request.getDateFin().isBefore(request.getDateDebut())) {
             throw new IllegalArgumentException("La date de fin ne peut pas etre anterieure a la date de debut");
         }
     }

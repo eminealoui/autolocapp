@@ -1,17 +1,27 @@
 package tn.esprit.autoloc.service;
 
 import java.util.List;
-import tn.esprit.autoloc.domain.Vehicule;
+import tn.esprit.autoloc.dto.VehiculeDTO;
+import tn.esprit.autoloc.dto.VehiculeRequestDTO;
 
 public interface IVehiculeService {
 
-    Vehicule create(Vehicule vehicule);
+    VehiculeDTO create(VehiculeRequestDTO request);
 
-    Vehicule findById(Long id);
+    VehiculeDTO findById(Long id);
 
-    List<Vehicule> findAll();
+    List<VehiculeDTO> findAll();
 
-    Vehicule update(Long id, Vehicule vehicule);
+    VehiculeDTO update(Long id, VehiculeRequestDTO request);
 
     void deleteById(Long id);
+
+    // ---- Atelier 6 : services d'affectation ----
+
+    // Ajoute un equipement a un vehicule (sans doublon)
+    VehiculeDTO affecterVehiculeAEquipement(Long idVehicule, Long idEquipement);
+
+    // Cree une maintenance (debut = aujourd'hui) pour le vehicule identifie par son immatriculation
+    // et passe le vehicule au statut MAINTENANCE
+    VehiculeDTO affecterMaintenanceAvehicule(String description, String immatriculation);
 }

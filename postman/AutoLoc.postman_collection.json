@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "030f5b67-ac6f-4241-9d3f-b719563eb6a8",
     "name": "AutoLoc",
-    "description": "Atelier 5 - tests de l'API REST AutoLoc. Selectionner l'environnement 'local' puis lancer la collection dans l'ordre (Run collection).",
+    "description": "Atelier 5 et 6 - tests de l'API REST AutoLoc (DTO, validation, gestion centralisee des erreurs, services d'affectation). Selectionner l'environnement 'local' puis lancer la collection dans l'ordre (Run collection).",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -81,14 +81,15 @@
           }
         },
         {
-          "name": "Creer une agence avec identifiant (400)",
+          "name": "Creer une agence sans ville (400)",
           "event": [
             {
               "listen": "test",
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));"
+                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Erreur sur le champ ville\", () => pm.expect(pm.response.json().fieldErrors).to.have.property(\"ville\"));"
                 ]
               }
             }
@@ -113,7 +114,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{ \"idAgence\": 5, \"nom\": \"Agence X\", \"ville\": \"Sousse\" }",
+              "raw": "{ \"nom\": \"Agence X\", \"ville\": \"\" }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -130,7 +131,8 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));"
+                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Erreur sur le champ nom\", () => pm.expect(pm.response.json().fieldErrors).to.have.property(\"nom\"));"
                 ]
               }
             }
@@ -449,7 +451,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{ \"nom\": \"Ben Ali\", \"prenom\": \"Sami\", \"role\": \"AGENT\", \"agence\": { \"idAgence\": {{agenceId}} } }",
+              "raw": "{ \"nom\": \"Ben Ali\", \"prenom\": \"Sami\", \"role\": \"AGENT\", \"idAgence\": {{agenceId}} }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -621,7 +623,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{ \"nom\": \"Ben Ali\", \"prenom\": \"Sami\", \"role\": \"MANAGER\", \"agence\": { \"idAgence\": {{agenceId}} } }",
+              "raw": "{ \"nom\": \"Ben Ali\", \"prenom\": \"Sami\", \"role\": \"MANAGER\", \"idAgence\": {{agenceId}} }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -727,7 +729,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{ \"immatriculation\": \"TU-{{$timestamp}}\", \"marque\": \"Peugeot\", \"modele\": \"208\", \"categorie\": \"CITADINE\",\n  \"tarifJournalier\": 80.00, \"statut\": \"DISPONIBLE\", \"agence\": { \"idAgence\": {{agenceId}} } }",
+              "raw": "{ \"immatriculation\": \"TU-{{$timestamp}}\", \"marque\": \"Peugeot\", \"modele\": \"208\", \"categorie\": \"CITADINE\",\n  \"tarifJournalier\": 80.00, \"statut\": \"DISPONIBLE\", \"idAgence\": {{agenceId}} }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -830,7 +832,8 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));"
+                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Erreur sur tarifJournalier\", () => pm.expect(pm.response.json().fieldErrors).to.have.property(\"tarifJournalier\"));"
                 ]
               }
             }
@@ -899,7 +902,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{ \"immatriculation\": \"TU-MAJ-{{$timestamp}}\", \"marque\": \"Peugeot\", \"modele\": \"208\", \"categorie\": \"CITADINE\",\n  \"tarifJournalier\": 95.00, \"statut\": \"DISPONIBLE\", \"agence\": { \"idAgence\": {{agenceId}} } }",
+              "raw": "{ \"immatriculation\": \"TU-MAJ-{{$timestamp}}\", \"marque\": \"Peugeot\", \"modele\": \"208\", \"categorie\": \"CITADINE\",\n  \"tarifJournalier\": 95.00, \"statut\": \"DISPONIBLE\", \"idAgence\": {{agenceId}} }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1472,7 +1475,8 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));"
+                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Erreur sur email\", () => pm.expect(pm.response.json().fieldErrors).to.have.property(\"email\"));"
                 ]
               }
             }
@@ -1733,7 +1737,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{ \"dateDebut\": \"2026-11-02\", \"dateFin\": \"2026-11-06\", \"statut\": \"CONFIRMEE\",\n  \"client\": { \"idClient\": {{clientId}} }, \"vehicule\": { \"idVehicule\": {{vehiculeId}} } }",
+              "raw": "{ \"dateDebut\": \"2026-11-02\", \"dateFin\": \"2026-11-06\", \"statut\": \"CONFIRMEE\",\n  \"idClient\": {{clientId}}, \"idVehicule\": {{vehiculeId}} }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1776,7 +1780,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{ \"dateDebut\": \"2026-12-01\", \"dateFin\": \"2026-12-05\", \"statut\": \"EN_ATTENTE\",\n  \"client\": { \"idClient\": {{clientId}} }, \"vehicule\": { \"idVehicule\": {{vehiculeId}} } }",
+              "raw": "{ \"dateDebut\": \"2026-12-01\", \"dateFin\": \"2026-12-05\", \"statut\": \"EN_ATTENTE\",\n  \"idClient\": {{clientId}}, \"idVehicule\": {{vehiculeId}} }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1822,7 +1826,7 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
-                  "pm.test(\"Client present\", () => pm.expect(pm.response.json().client).to.not.be.null);"
+                  "pm.test(\"Client et vehicule references par id\", () => { const r = pm.response.json(); pm.expect(r.idClient).to.not.be.null; pm.expect(r.idVehicule).to.not.be.null; pm.expect(r).to.not.have.property(\"client\"); });"
                 ]
               }
             }
@@ -1880,7 +1884,8 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));"
+                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Erreur de periode\", () => pm.expect(pm.response.json().fieldErrors).to.have.property(\"periodeValide\"));"
                 ]
               }
             }
@@ -1905,7 +1910,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{ \"dateDebut\": \"2026-11-10\", \"dateFin\": \"2026-11-05\", \"statut\": \"EN_ATTENTE\",\n  \"client\": { \"idClient\": {{clientId}} }, \"vehicule\": { \"idVehicule\": {{vehiculeId}} } }",
+              "raw": "{ \"dateDebut\": \"2026-11-10\", \"dateFin\": \"2026-11-05\", \"statut\": \"EN_ATTENTE\",\n  \"idClient\": {{clientId}}, \"idVehicule\": {{vehiculeId}} }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1949,7 +1954,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{ \"dateDebut\": \"2026-11-02\", \"dateFin\": \"2026-11-08\", \"statut\": \"CONFIRMEE\",\n  \"client\": { \"idClient\": {{clientId}} }, \"vehicule\": { \"idVehicule\": {{vehiculeId}} } }",
+              "raw": "{ \"dateDebut\": \"2026-11-02\", \"dateFin\": \"2026-11-08\", \"statut\": \"CONFIRMEE\",\n  \"idClient\": {{clientId}}, \"idVehicule\": {{vehiculeId}} }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1992,7 +1997,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{ \"dateDebut\": \"2027-01-10\", \"dateFin\": \"2027-01-12\", \"statut\": \"EN_ATTENTE\",\n  \"client\": { \"idClient\": {{clientId}} }, \"vehicule\": { \"idVehicule\": {{vehiculeId}} } }",
+              "raw": "{ \"dateDebut\": \"2027-01-10\", \"dateFin\": \"2027-01-12\", \"statut\": \"EN_ATTENTE\",\n  \"idClient\": {{clientId}}, \"idVehicule\": {{vehiculeId}} }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2126,7 +2131,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{ \"dateSignature\": \"2026-11-02\", \"montantTotal\": 480.00, \"valide\": true,\n  \"reservation\": { \"idReservation\": {{reservationId}} } }",
+              "raw": "{ \"dateSignature\": \"2026-11-02\", \"montantTotal\": 480.00, \"valide\": true,\n  \"idReservation\": {{reservationId}} }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2136,14 +2141,15 @@
           }
         },
         {
-          "name": "Creer un contrat avec un identifiant (400)",
+          "name": "Creer un contrat sans reservation (400)",
           "event": [
             {
               "listen": "test",
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));"
+                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Erreur sur idReservation\", () => pm.expect(pm.response.json().fieldErrors).to.have.property(\"idReservation\"));"
                 ]
               }
             }
@@ -2168,7 +2174,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{ \"idContrat\": 5, \"dateSignature\": \"2026-11-02\", \"montantTotal\": 480.00, \"valide\": true }",
+              "raw": "{ \"dateSignature\": \"2026-11-02\", \"montantTotal\": 480.00, \"valide\": true }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2185,7 +2191,8 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));"
+                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Erreur sur montantTotal\", () => pm.expect(pm.response.json().fieldErrors).to.have.property(\"montantTotal\"));"
                 ]
               }
             }
@@ -2210,7 +2217,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{ \"dateSignature\": \"2026-11-02\", \"montantTotal\": -10.00, \"valide\": true,\n  \"reservation\": { \"idReservation\": {{reservationId}} } }",
+              "raw": "{ \"dateSignature\": \"2026-11-02\", \"montantTotal\": -10.00, \"valide\": true,\n  \"idReservation\": {{reservationId}} }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2312,7 +2319,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{ \"dateSignature\": \"2026-11-02\", \"montantTotal\": 520.00, \"valide\": true }",
+              "raw": "{ \"dateSignature\": \"2026-11-02\", \"montantTotal\": 520.00, \"valide\": true, \"idReservation\": {{reservationId}} }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2355,7 +2362,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{ \"dateSignature\": \"2026-11-02\", \"montantTotal\": 520.00, \"valide\": true }",
+              "raw": "{ \"dateSignature\": \"2026-11-02\", \"montantTotal\": 520.00, \"valide\": true, \"idReservation\": {{reservationId}} }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2398,7 +2405,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{ \"dateSignature\": \"2026-11-02\", \"montantTotal\": -1.00, \"valide\": true }",
+              "raw": "{ \"dateSignature\": \"2026-11-02\", \"montantTotal\": -1.00, \"valide\": true, \"idReservation\": {{reservationId}} }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2506,7 +2513,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{ \"dateSignature\": \"2026-11-02\", \"montantTotal\": 480.00, \"valide\": true,\n  \"reservation\": { \"idReservation\": {{reservationCascadeId}} },\n  \"paiements\": [\n    { \"montant\": 150.00, \"datePaiement\": \"2026-11-02\", \"modePaiement\": \"CARTE\" },\n    { \"montant\": 330.00, \"datePaiement\": \"2026-11-06\", \"modePaiement\": \"VIREMENT\" } ] }",
+              "raw": "{ \"dateSignature\": \"2026-11-02\", \"montantTotal\": 480.00, \"valide\": true,\n  \"idReservation\": {{reservationCascadeId}},\n  \"paiements\": [\n    { \"montant\": 150.00, \"datePaiement\": \"2026-11-02\", \"modePaiement\": \"CARTE\" },\n    { \"montant\": 330.00, \"datePaiement\": \"2026-11-06\", \"modePaiement\": \"VIREMENT\" } ] }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2579,7 +2586,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{ \"dateSignature\": \"2026-11-02\", \"montantTotal\": 500.00, \"valide\": true }",
+              "raw": "{ \"dateSignature\": \"2026-11-02\", \"montantTotal\": 500.00, \"valide\": true, \"idReservation\": {{reservationCascadeId}} }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2789,7 +2796,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{ \"dateDebut\": \"2026-10-01\", \"dateFin\": \"2026-10-03\", \"description\": \"Vidange\",\n  \"vehicule\": { \"idVehicule\": {{vehiculeId}} } }",
+              "raw": "{ \"dateDebut\": \"2026-10-01\", \"dateFin\": \"2026-10-03\", \"description\": \"Vidange\",\n  \"idVehicule\": {{vehiculeId}} }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2892,7 +2899,8 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));"
+                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Erreur de periode\", () => pm.expect(pm.response.json().fieldErrors).to.have.property(\"periodeValide\"));"
                 ]
               }
             }
@@ -2917,7 +2925,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{ \"dateDebut\": \"2026-10-10\", \"dateFin\": \"2026-10-01\", \"description\": \"Erreur\",\n  \"vehicule\": { \"idVehicule\": {{vehiculeId}} } }",
+              "raw": "{ \"dateDebut\": \"2026-10-10\", \"dateFin\": \"2026-10-01\", \"description\": \"Erreur\",\n  \"idVehicule\": {{vehiculeId}} }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2961,7 +2969,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{ \"dateDebut\": \"2026-10-01\", \"dateFin\": \"2026-10-04\", \"description\": \"Vidange + filtres\",\n  \"vehicule\": { \"idVehicule\": {{vehiculeId}} } }",
+              "raw": "{ \"dateDebut\": \"2026-10-01\", \"dateFin\": \"2026-10-04\", \"description\": \"Vidange + filtres\",\n  \"idVehicule\": {{vehiculeId}} }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -3027,6 +3035,1386 @@
               ]
             }
           }
+        }
+      ]
+    },
+    {
+      "name": "Validation et erreurs (Atelier 6)",
+      "item": [
+        {
+          "name": "Creer une agence avec telephone invalide (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/agences",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "agences"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"nom\": \"Agence Tel\", \"ville\": \"Tunis\", \"telephone\": \"abc-def\" }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"fieldErrors contient telephone\", () => pm.expect(pm.response.json().fieldErrors).to.have.property(\"telephone\"));",
+                  "pm.test(\"Corps d'erreur uniforme\", () => { const e = pm.response.json(); pm.expect(e).to.have.property(\"timestamp\"); pm.expect(e).to.have.property(\"status\"); pm.expect(e).to.have.property(\"message\"); pm.expect(e).to.have.property(\"path\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Creer un client avec email invalide (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/clients",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clients"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"nom\": \"Test\", \"prenom\": \"Mail\", \"email\": \"pas-un-email\", \"numPermis\": \"P-VAL-1\" }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"fieldErrors contient email\", () => pm.expect(pm.response.json().fieldErrors).to.have.property(\"email\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Creer un vehicule avec plusieurs erreurs (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"immatriculation\": \"\", \"marque\": \"\", \"modele\": \"208\", \"tarifJournalier\": -5 }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Plusieurs erreurs de champs\", () => pm.expect(Object.keys(pm.response.json().fieldErrors).length).to.be.above(2));",
+                  "pm.test(\"fieldErrors contient immatriculation\", () => pm.expect(pm.response.json().fieldErrors).to.have.property(\"immatriculation\"));",
+                  "pm.test(\"fieldErrors contient categorie\", () => pm.expect(pm.response.json().fieldErrors).to.have.property(\"categorie\"));",
+                  "pm.test(\"fieldErrors contient statut\", () => pm.expect(pm.response.json().fieldErrors).to.have.property(\"statut\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Creer un vehicule avec categorie inconnue (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"immatriculation\": \"ENUM-1\", \"marque\": \"X\", \"modele\": \"Y\", \"categorie\": \"FUSEE\", \"tarifJournalier\": 50, \"statut\": \"DISPONIBLE\" }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Corps d'erreur uniforme\", () => { const e = pm.response.json(); pm.expect(e).to.have.property(\"timestamp\"); pm.expect(e).to.have.property(\"status\"); pm.expect(e).to.have.property(\"message\"); pm.expect(e).to.have.property(\"path\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Creer une agence avec JSON mal forme (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/agences",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "agences"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"nom\": \"Agence\", \"ville\": ",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Corps d'erreur uniforme\", () => { const e = pm.response.json(); pm.expect(e).to.have.property(\"timestamp\"); pm.expect(e).to.have.property(\"status\"); pm.expect(e).to.have.property(\"message\"); pm.expect(e).to.have.property(\"path\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Consulter un vehicule avec un identifiant non numerique (400)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules/abc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules",
+                "abc"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Corps d'erreur uniforme\", () => { const e = pm.response.json(); pm.expect(e).to.have.property(\"timestamp\"); pm.expect(e).to.have.property(\"status\"); pm.expect(e).to.have.property(\"message\"); pm.expect(e).to.have.property(\"path\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Creer une reservation avec date illisible (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/reservations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reservations"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"dateDebut\": \"02/11/2026\", \"dateFin\": \"2026-11-06\", \"statut\": \"EN_ATTENTE\", \"idClient\": {{clientId}}, \"idVehicule\": {{vehiculeId}} }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Corps d'erreur uniforme\", () => { const e = pm.response.json(); pm.expect(e).to.have.property(\"timestamp\"); pm.expect(e).to.have.property(\"status\"); pm.expect(e).to.have.property(\"message\"); pm.expect(e).to.have.property(\"path\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Creer une reservation pour un client inexistant (404)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/reservations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reservations"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"dateDebut\": \"2026-11-02\", \"dateFin\": \"2026-11-06\", \"statut\": \"EN_ATTENTE\", \"idClient\": 99999, \"idVehicule\": {{vehiculeId}} }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"Corps d'erreur uniforme\", () => { const e = pm.response.json(); pm.expect(e).to.have.property(\"timestamp\"); pm.expect(e).to.have.property(\"status\"); pm.expect(e).to.have.property(\"message\"); pm.expect(e).to.have.property(\"path\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Creer un vehicule (immatriculation a dupliquer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"immatriculation\": \"{{immatDup}}\", \"marque\": \"Kia\", \"modele\": \"Picanto\", \"categorie\": \"CITADINE\", \"tarifJournalier\": 70.00, \"statut\": \"DISPONIBLE\" }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.environment.set(\"immatDup\", \"DUP-\" + Date.now());"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 201\", () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Creer un vehicule avec la meme immatriculation (409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"immatriculation\": \"{{immatDup}}\", \"marque\": \"Kia\", \"modele\": \"Picanto\", \"categorie\": \"CITADINE\", \"tarifJournalier\": 70.00, \"statut\": \"DISPONIBLE\" }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 409\", () => pm.response.to.have.status(409));",
+                  "pm.test(\"Corps d'erreur uniforme\", () => { const e = pm.response.json(); pm.expect(e).to.have.property(\"timestamp\"); pm.expect(e).to.have.property(\"status\"); pm.expect(e).to.have.property(\"message\"); pm.expect(e).to.have.property(\"path\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Route inexistante (404)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/inconnu",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inconnu"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"Corps d'erreur uniforme\", () => { const e = pm.response.json(); pm.expect(e).to.have.property(\"timestamp\"); pm.expect(e).to.have.property(\"status\"); pm.expect(e).to.have.property(\"message\"); pm.expect(e).to.have.property(\"path\"); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Services d'affectation (Atelier 6)",
+      "item": [
+        {
+          "name": "Creer un client pour l'affectation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/clients",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clients"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"nom\": \"Affecte\", \"prenom\": \"Client\", \"email\": \"aff{{$timestamp}}@mail.tn\", \"telephone\": \"55000000\", \"numPermis\": \"AFF-{{$timestamp}}\", \"dateInscription\": \"2026-11-01\" }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 201\", () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "1. Affecter une reservation a un client",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reservations/{{reservationId}}/affecter-client?nom=Affecte&prenom=Client",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reservations",
+                "{{reservationId}}",
+                "affecter-client"
+              ],
+              "query": [
+                {
+                  "key": "nom",
+                  "value": "Affecte"
+                },
+                {
+                  "key": "prenom",
+                  "value": "Client"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Reservation affectee au client\", () => pm.expect(pm.response.json().nomClient).to.eql(\"Client Affecte\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "1. Affecter une reservation a un client inexistant (404)",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reservations/{{reservationId}}/affecter-client?nom=Inconnu&prenom=Personne",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reservations",
+                "{{reservationId}}",
+                "affecter-client"
+              ],
+              "query": [
+                {
+                  "key": "nom",
+                  "value": "Inconnu"
+                },
+                {
+                  "key": "prenom",
+                  "value": "Personne"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"Corps d'erreur uniforme\", () => { const e = pm.response.json(); pm.expect(e).to.have.property(\"timestamp\"); pm.expect(e).to.have.property(\"status\"); pm.expect(e).to.have.property(\"message\"); pm.expect(e).to.have.property(\"path\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "1. Affecter une reservation inexistante (404)",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reservations/9999/affecter-client?nom=Affecte&prenom=Client",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reservations",
+                "9999",
+                "affecter-client"
+              ],
+              "query": [
+                {
+                  "key": "nom",
+                  "value": "Affecte"
+                },
+                {
+                  "key": "prenom",
+                  "value": "Client"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "1. Affecter sans prenom (400)",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reservations/{{reservationId}}/affecter-client?nom=Affecte",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reservations",
+                "{{reservationId}}",
+                "affecter-client"
+              ],
+              "query": [
+                {
+                  "key": "nom",
+                  "value": "Affecte"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Corps d'erreur uniforme\", () => { const e = pm.response.json(); pm.expect(e).to.have.property(\"timestamp\"); pm.expect(e).to.have.property(\"status\"); pm.expect(e).to.have.property(\"message\"); pm.expect(e).to.have.property(\"path\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "1. Affecter avec nom vide (400)",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reservations/{{reservationId}}/affecter-client?nom=&prenom=Client",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reservations",
+                "{{reservationId}}",
+                "affecter-client"
+              ],
+              "query": [
+                {
+                  "key": "nom",
+                  "value": ""
+                },
+                {
+                  "key": "prenom",
+                  "value": "Client"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"fieldErrors contient nom\", () => pm.expect(pm.response.json().fieldErrors).to.have.property(\"nom\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Creer un equipement pour l'affectation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/equipements",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "equipements"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"libelle\": \"Siege bebe\" }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 201\", () => pm.response.to.have.status(201));",
+                  "pm.environment.set(\"equipementAffId\", pm.response.json().idEquipement);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Creer un vehicule pour l'affectation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"immatriculation\": \"AFF-{{$timestamp}}\", \"marque\": \"Hyundai\", \"modele\": \"i10\", \"categorie\": \"CITADINE\", \"tarifJournalier\": 75.00, \"statut\": \"DISPONIBLE\" }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 201\", () => pm.response.to.have.status(201));",
+                  "pm.environment.set(\"vehiculeAffId\", pm.response.json().idVehicule);",
+                  "pm.environment.set(\"immatAff\", pm.response.json().immatriculation);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2. Affecter un equipement a un vehicule",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules/{{vehiculeAffId}}/equipements/{{equipementAffId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules",
+                "{{vehiculeAffId}}",
+                "equipements",
+                "{{equipementAffId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Equipement present\", () => pm.expect(pm.response.json().equipements.map(e => e.idEquipement)).to.include(Number(pm.environment.get(\"equipementAffId\"))));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2. Re-affecter le meme equipement (pas de doublon)",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules/{{vehiculeAffId}}/equipements/{{equipementAffId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules",
+                "{{vehiculeAffId}}",
+                "equipements",
+                "{{equipementAffId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Un seul exemplaire\", () => pm.expect(pm.response.json().equipements.length).to.eql(1));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2. Affecter un equipement inexistant (404)",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules/{{vehiculeAffId}}/equipements/9999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules",
+                "{{vehiculeAffId}}",
+                "equipements",
+                "9999"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2. Affecter un equipement a un vehicule inexistant (404)",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules/9999/equipements/{{equipementAffId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules",
+                "9999",
+                "equipements",
+                "{{equipementAffId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3. Affecter une maintenance a un vehicule",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules/affecter-maintenance?description=Revision des 10000 km&immatriculation={{immatAff}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules",
+                "affecter-maintenance"
+              ],
+              "query": [
+                {
+                  "key": "description",
+                  "value": "Revision des 10000 km"
+                },
+                {
+                  "key": "immatriculation",
+                  "value": "{{immatAff}}"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Vehicule passe en MAINTENANCE\", () => pm.expect(pm.response.json().statut).to.eql(\"MAINTENANCE\"));",
+                  "pm.test(\"Une maintenance enregistree\", () => pm.expect(pm.response.json().nbMaintenances).to.eql(1));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3. Affecter une maintenance a une immatriculation inconnue (404)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules/affecter-maintenance?description=Revision&immatriculation=INCONNUE-000",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules",
+                "affecter-maintenance"
+              ],
+              "query": [
+                {
+                  "key": "description",
+                  "value": "Revision"
+                },
+                {
+                  "key": "immatriculation",
+                  "value": "INCONNUE-000"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"Corps d'erreur uniforme\", () => { const e = pm.response.json(); pm.expect(e).to.have.property(\"timestamp\"); pm.expect(e).to.have.property(\"status\"); pm.expect(e).to.have.property(\"message\"); pm.expect(e).to.have.property(\"path\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3. Affecter une maintenance sans immatriculation (400)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules/affecter-maintenance?description=Revision",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules",
+                "affecter-maintenance"
+              ],
+              "query": [
+                {
+                  "key": "description",
+                  "value": "Revision"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Corps d'erreur uniforme\", () => { const e = pm.response.json(); pm.expect(e).to.have.property(\"timestamp\"); pm.expect(e).to.have.property(\"status\"); pm.expect(e).to.have.property(\"message\"); pm.expect(e).to.have.property(\"path\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Creer une reservation sans contrat (periode dediee)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/reservations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reservations"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"dateDebut\": \"2028-03-01\", \"dateFin\": \"2028-03-05\", \"statut\": \"CONFIRMEE\", \"idClient\": {{clientId}}, \"idVehicule\": {{vehiculeAffId}} }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 201\", () => pm.response.to.have.status(201));",
+                  "pm.environment.set(\"reservationAffId\", pm.response.json().idReservation);",
+                  "pm.test(\"Pas encore de contrat\", () => pm.expect(pm.response.json().idContrat).to.be.null);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4. Affecter un contrat a une reservation",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/contrats/affecter-reservation?dateSignature=2028-02-20&dateDebut=2028-03-01&dateFin=2028-03-05",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "contrats",
+                "affecter-reservation"
+              ],
+              "query": [
+                {
+                  "key": "dateSignature",
+                  "value": "2028-02-20"
+                },
+                {
+                  "key": "dateDebut",
+                  "value": "2028-03-01"
+                },
+                {
+                  "key": "dateFin",
+                  "value": "2028-03-05"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"Contrat lie a la reservation\", () => pm.expect(pm.response.json().idReservation).to.eql(Number(pm.environment.get(\"reservationAffId\"))));",
+                  "pm.test(\"Montant = 4 jours x 75\", () => pm.expect(pm.response.json().montantTotal).to.eql(300.0));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4. Affecter un contrat : plus de reservation sans contrat (404)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/contrats/affecter-reservation?dateSignature=2028-02-20&dateDebut=2028-03-01&dateFin=2028-03-05",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "contrats",
+                "affecter-reservation"
+              ],
+              "query": [
+                {
+                  "key": "dateSignature",
+                  "value": "2028-02-20"
+                },
+                {
+                  "key": "dateDebut",
+                  "value": "2028-03-01"
+                },
+                {
+                  "key": "dateFin",
+                  "value": "2028-03-05"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"Corps d'erreur uniforme\", () => { const e = pm.response.json(); pm.expect(e).to.have.property(\"timestamp\"); pm.expect(e).to.have.property(\"status\"); pm.expect(e).to.have.property(\"message\"); pm.expect(e).to.have.property(\"path\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4. Affecter un contrat avec une date mal formee (400)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/contrats/affecter-reservation?dateSignature=demain&dateDebut=2028-03-01&dateFin=2028-03-05",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "contrats",
+                "affecter-reservation"
+              ],
+              "query": [
+                {
+                  "key": "dateSignature",
+                  "value": "demain"
+                },
+                {
+                  "key": "dateDebut",
+                  "value": "2028-03-01"
+                },
+                {
+                  "key": "dateFin",
+                  "value": "2028-03-05"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Corps d'erreur uniforme\", () => { const e = pm.response.json(); pm.expect(e).to.have.property(\"timestamp\"); pm.expect(e).to.have.property(\"status\"); pm.expect(e).to.have.property(\"message\"); pm.expect(e).to.have.property(\"path\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "5. Creer une reservation et son contrat",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/reservations/avec-contrat",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reservations",
+                "avec-contrat"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"dateDebut\": \"2028-04-01\", \"dateFin\": \"2028-04-04\", \"statut\": \"CONFIRMEE\", \"idClient\": {{clientId}}, \"idVehicule\": {{vehiculeAffId}},\n  \"contrat\": { \"dateSignature\": \"2028-03-25\", \"valide\": true } }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"Contrat associe\", () => pm.expect(pm.response.json().idContrat).to.not.be.null);",
+                  "pm.environment.set(\"contratAssocieId\", pm.response.json().idContrat);",
+                  "pm.test(\"Reservation creee\", () => pm.expect(pm.response.json().idReservation).to.not.be.null);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "5. Verifier le contrat cree (montant calcule)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/contrats/{{contratAssocieId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "contrats",
+                "{{contratAssocieId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Montant = 3 jours x 75\", () => pm.expect(pm.response.json().montantTotal).to.eql(225.0));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "5. Creer une reservation et son contrat sans contrat (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/reservations/avec-contrat",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reservations",
+                "avec-contrat"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"dateDebut\": \"2028-04-01\", \"dateFin\": \"2028-04-04\", \"idClient\": {{clientId}}, \"idVehicule\": {{vehiculeAffId}} }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"fieldErrors contient contrat\", () => pm.expect(pm.response.json().fieldErrors).to.have.property(\"contrat\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "5. Creer une reservation et son contrat pour un vehicule inexistant (404, rien n'est cree)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/reservations/avec-contrat",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reservations",
+                "avec-contrat"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"dateDebut\": \"2028-05-01\", \"dateFin\": \"2028-05-04\", \"idClient\": {{clientId}}, \"idVehicule\": 99999,\n  \"contrat\": { \"dateSignature\": \"2028-04-25\", \"montantTotal\": 100.00, \"valide\": false } }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ]
         }
       ]
     }

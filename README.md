@@ -8,11 +8,13 @@ réservations, contrats, paiements, maintenances...).
 
 | Package | Contenu | Atelier |
 |---|---|---|
-| `domain` | Entités JPA, énumérations, annotations Jackson | 1, 2, 5 |
+| `domain` | Entités JPA et énumérations | 1, 2 |
 | `repository` | Interfaces `I...Repository` (`JpaRepository<Entite, Long>`) | 3 |
-| `service` | Interfaces `I...Service` + implémentations `...ServiceImpl` | 4 |
-| `exception` | `ResourceNotFoundException` | 4 |
-| `web.controller` | Contrôleurs REST, `GlobalExceptionHandler`, `OpenApiConfig` | 5 |
+| `service` | Interfaces `I...Service` + implémentations `...ServiceImpl` (renvoient des DTO, services d'affectation) | 4, 6 |
+| `dto` | DTO de saisie (`...RequestDTO`, validés) et de réponse (`...DTO`) | 6 |
+| `mapper` | Conversion entité ⇄ DTO (`...Mapper`) | 6 |
+| `exception` | `ResourceNotFoundException`, `ErrorResponse`, `GlobalExceptionHandler` (gestion centralisée des erreurs) | 4, 6 |
+| `web.controller` | Contrôleurs REST (exposition des services, DTO + `@Valid`), `OpenApiConfig` | 5, 6 |
 
 ## Lancement
 
@@ -33,3 +35,4 @@ réservations, contrats, paiements, maintenances...).
 - `docs/repository-notes.md` — Atelier 3 (couche Repository)
 - `docs/service-notes.md` — Atelier 4 (couche Service, IoC/DI)
 - `docs/api-notes.md` — Atelier 5 (API REST, Postman, Swagger)
+- `docs/dto-notes.md` — Atelier 6 (DTO, validation, gestion centralisée des erreurs, services d'affectation)

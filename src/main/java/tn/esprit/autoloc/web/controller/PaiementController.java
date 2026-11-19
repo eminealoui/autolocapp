@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import tn.esprit.autoloc.domain.Paiement;
+import tn.esprit.autoloc.dto.PaiementDTO;
 import tn.esprit.autoloc.service.IPaiementService;
 
 // Lecture seule : un paiement est cree, modifie et supprime via son Contrat
@@ -27,7 +27,7 @@ public class PaiementController {
     @Operation(summary = "Lister les paiements")
     @ApiResponse(responseCode = "200", description = "Liste des paiements (eventuellement vide)")
     @GetMapping
-    public List<Paiement> findAll() {
+    public List<PaiementDTO> findAll() {
         return paiementService.findAll();
     }
 
@@ -37,7 +37,7 @@ public class PaiementController {
             @ApiResponse(responseCode = "404", description = "Paiement introuvable")
     })
     @GetMapping("/{id}")
-    public Paiement findById(@Parameter(description = "Identifiant du paiement") @PathVariable Long id) {
+    public PaiementDTO findById(@Parameter(description = "Identifiant du paiement") @PathVariable Long id) {
         return paiementService.findById(id);
     }
 }

@@ -1,5 +1,9 @@
 # Atelier 5 — Notes sur l'API REST, Postman et Swagger
 
+> **Mise à jour Atelier 6** : les contrôleurs échangent désormais des DTO (voir `docs/dto-notes.md`). Les annotations Jackson
+> décrites en section B ont été retirées des entités (devenues inutiles) et `GlobalExceptionHandler` a été déplacé dans le package
+> `exception` et étendu (validation, 409, 500...). Ce document reste la référence de l'Atelier 5.
+
 Configuration : `server.servlet.context-path=/api`, `server.port=8081` (le projet utilise
 8081 depuis l'Atelier 1, d'où `baseUrl = http://localhost:8081` dans l'environnement
 Postman « local »). Swagger UI : `http://localhost:8081/api/swagger-ui.html`,
