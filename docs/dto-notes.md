@@ -108,9 +108,38 @@ Nouvelles méthodes de repository : `IVehiculeRepository.findByImmatriculation`,
 
 ## 5. Tests et captures d'écran
 
-La collection `postman/AutoLoc.postman_collection.json` est mise à jour (bodies avec identifiants) et complétée par
-deux dossiers : **Validation et erreurs (Atelier 6)** et **Services d'affectation (Atelier 6)**.
-Captures à prendre après *Run collection* (environnement `local`) : résultat du Runner (tous les tests verts),
-une réponse DTO (ex. `GET /api/reservations/{id}`), une erreur de validation avec `fieldErrors`
-(ex. client avec email invalide), un 404 / 409 au format uniforme, et chacun des 5 services d'affectation
-(dans Postman ou dans Swagger UI, dont les nouveaux endpoints et les schémas `...RequestDTO` / `...DTO`).
+La collection `postman/AutoLoc.postman_collection.json` est mise à jour (corps de requête avec identifiants) et
+complétée par deux dossiers : **Validation et erreurs (Atelier 6)** et **Services d'affectation (Atelier 6)**.
+Exécution du Runner Postman (environnement `local`) : **171 tests réussis, 0 échec, 0 erreur**.
+
+### 5.1 Exécution de la collection Postman
+
+![Runner Postman : 171 tests réussis, 0 échec](captures/a6-01-runner-postman.png)
+
+### 5.2 Réponse sous forme de DTO
+
+`GET /api/reservations/{id}` : le client et le véhicule sont réduits à leur identifiant et à quelques champs utiles
+(`idClient`, `nomClient`, `idVehicule`, `immatriculation`, `idContrat`), sans objets imbriqués.
+
+![Réponse ReservationResponseDTO](captures/a6-02-reponse-dto-reservation.png)
+
+`POST /api/vehicules` : `VehiculeDTO` avec l'agence réduite (`idAgence`, `nomAgence`), la liste des équipements et
+le nombre de maintenances.
+
+![Réponse VehiculeDTO](captures/a6-04-vehicule-cree-dto.png)
+
+### 5.3 Validation et gestion centralisée des erreurs
+
+Erreur de validation (400) : le champ fautif et son message sont dans `fieldErrors`.
+
+![Erreur 400 de validation](captures/a6-03-validation-email-400.png)
+
+Ressource introuvable (404) : même format d'erreur uniforme (`timestamp`, `status`, `error`, `message`, `path`).
+
+![Erreur 404](captures/a6-05-erreur-404.png)
+
+### 5.4 Documentation Swagger
+
+Le service `POST /reservations/avec-contrat` et le schéma du DTO de saisie `ReservationWithContratRequestDTO`.
+
+![Swagger : création d'une réservation et de son contrat](captures/a6-06-swagger-avec-contrat.png)
