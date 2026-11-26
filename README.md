@@ -14,6 +14,7 @@ réservations, contrats, paiements, maintenances...).
 | `dto` | DTO de saisie (`...RequestDTO`, validés) et de réponse (`...DTO`) | 6 |
 | `mapper` | Conversion entité ⇄ DTO (`...Mapper`) | 6 |
 | `exception` | `ResourceNotFoundException`, `ErrorResponse`, `GlobalExceptionHandler` (gestion centralisée des erreurs) | 4, 6 |
+| `scheduler` | Tâches planifiées `@Scheduled` (échéances des contrats, fin de location) | 7 |
 | `web.controller` | Contrôleurs REST (exposition des services, DTO + `@Valid`), `OpenApiConfig` | 5, 6 |
 
 ## Lancement
@@ -36,3 +37,4 @@ réservations, contrats, paiements, maintenances...).
 - `docs/service-notes.md` — Atelier 4 (couche Service, IoC/DI)
 - `docs/api-notes.md` — Atelier 5 (API REST, Postman, Swagger)
 - `docs/dto-notes.md` — Atelier 6 (DTO, validation, gestion centralisée des erreurs, services d'affectation)
+- `docs/scheduler-notes.md` — Atelier 7 (tâches planifiées `@Scheduled`)
